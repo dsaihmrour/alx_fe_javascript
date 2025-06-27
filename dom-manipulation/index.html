@@ -10,9 +10,11 @@
       margin: 2rem;
       background-color: #f4f4f4;
     }
-    h1 {
+
+    h1, h2 {
       color: #333;
     }
+
     #quoteDisplay {
       margin: 1rem 0;
       padding: 1rem;
@@ -20,27 +22,23 @@
       border-left: 5px solid #2196F3;
       font-style: italic;
     }
-    #controls, #addQuoteSection {
-      margin-top: 1rem;
-    }
-    input {
+
+    select, input, button {
       margin: 0.5rem 0.25rem;
       padding: 0.5rem;
     }
-    button {
-      padding: 0.5rem 1rem;
-      margin-top: 0.5rem;
-    }
-    #categorySelect {
-      margin-left: 1rem;
+
+    #controls, #filterControls {
+      margin-top: 1rem;
     }
   </style>
 </head>
 <body>
   <h1>Dynamic Quote Generator</h1>
-  
+
   <div id="quoteDisplay">Click the button to see a quote.</div>
 
+  <!-- Category Selector for Random Quote -->
   <div id="controls">
     <button id="newQuote">Show New Quote</button>
     <select id="categorySelect">
@@ -48,11 +46,27 @@
     </select>
   </div>
 
+  <!-- Category Filter for List View -->
+  <div id="filterControls">
+    <h2>Filter by Category</h2>
+    <select id="categoryFilter" onchange="filterQuotes()">
+      <option value="all">All Categories</option>
+    </select>
+  </div>
+
+  <!-- Add Quote Section -->
   <div id="addQuoteSection">
     <h2>Add a New Quote</h2>
     <input id="newQuoteText" type="text" placeholder="Enter a new quote" />
     <input id="newQuoteCategory" type="text" placeholder="Enter quote category" />
     <button onclick="addQuote()">Add Quote</button>
+  </div>
+
+  <!-- JSON Import/Export -->
+  <div id="jsonSection">
+    <h2>Import / Export Quotes</h2>
+    <input type="file" id="importFile" accept=".json" onchange="importFromJsonFile(event)" />
+    <button onclick="exportToJsonFile()">Export Quotes to JSON</button>
   </div>
 
   <script src="script.js"></script>

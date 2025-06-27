@@ -90,23 +90,6 @@ function addQuote() {
   alert("Quote added!");
 }
 
-function createAddQuoteForm() {
-  const container = document.createElement("div");
-  container.id = "addQuoteSection";
-
-  container.innerHTML = `
-    <h2>Add a New Quote</h2>
-    <input id="newQuoteText" type="text" placeholder="Enter a new quote" />
-    <input id="newQuoteCategory" type="text" placeholder="Enter quote category" />
-    <button onclick="addQuote()">Add Quote</button>
-    <br><br>
-    <input type="file" id="importFile" accept=".json" onchange="importFromJsonFile(event)" />
-    <button onclick="exportToJsonFile()">Export Quotes to JSON</button>
-  `;
-
-  document.body.appendChild(container);
-}
-
 // ===== JSON Import/Export =====
 function importFromJsonFile(event) {
   const fileReader = new FileReader();
@@ -141,16 +124,47 @@ function exportToJsonFile() {
   URL.revokeObjectURL(url);
 }
 
+// ===== Server Sync Simulation =====
+function fetchQuotesFromServer() {
+  fetch("https://jsonplaceholder.typicode.com/posts?_limit=5")
+    .then(response => response.json())
+    .then(data => {
+      const serverQuotes = data.map(item => ({
+        text: item.title,
+        category: "Server"
+      }));
+
+      let hasNew = false;
+      serverQuotes.forEach(sq => {
+        if (!quotes.some(q => q.text === sq.text)) {
+          quotes.push(sq);
+          hasNew = true;
+        }
+      });
+
+      if (hasNew) {
+        saveQuotes();
+        populateCategories();
+        alert("New quotes synced from server.");
+      }
+    })
+    .catch(err => {
+      console.error("Failed to fetch from server:", err);
+    });
+}
+
 // ===== Initialization =====
 window.onload = function () {
   loadQuotes();
   populateCategories();
-  createAddQuoteForm();
 
   const lastViewed = sessionStorage.getItem("lastQuote");
   if (lastViewed) {
     quoteDisplay.textContent = lastViewed;
   }
+
+  fetchQuotesFromServer();
+  setInterval(fetchQuotesFromServer, 30000); // sync every 30 seconds
 
   newQuoteBtn.addEventListener("click", showRandomQuote);
   categorySelect.addEventListener("change", showRandomQuote);
