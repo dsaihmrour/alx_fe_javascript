@@ -178,6 +178,11 @@ async function postQuoteToServer(quote) {
   }
 }
 
+// ===== New: Manual Sync Function =====
+async function syncQuotes() {
+  await fetchQuotesFromServer();
+}
+
 // ===== Initialization =====
 window.onload = function () {
   loadQuotes();
@@ -194,4 +199,9 @@ window.onload = function () {
   newQuoteBtn.addEventListener("click", showRandomQuote);
   categorySelect.addEventListener("change", showRandomQuote);
   categoryFilter.addEventListener("change", filterQuotes);
+
+  const syncBtn = document.getElementById("syncBtn");
+  if(syncBtn) {
+    syncBtn.addEventListener("click", syncQuotes);
+  }
 };
