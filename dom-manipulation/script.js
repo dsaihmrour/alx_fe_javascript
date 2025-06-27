@@ -84,10 +84,14 @@ function addQuote() {
     return;
   }
 
-  quotes.push({ text, category });
+  const newQuote = { text, category };
+  quotes.push(newQuote);
   saveQuotes();
   populateCategories();
   alert("Quote added!");
+
+  // Simulate POST to server
+  postQuoteToServer(newQuote);
 }
 
 // ===== JSON Import/Export =====
@@ -150,6 +154,27 @@ async function fetchQuotesFromServer() {
     }
   } catch (err) {
     console.error("Failed to fetch from server:", err);
+  }
+}
+
+async function postQuoteToServer(quote) {
+  try {
+    const response = await fetch("https://jsonplaceholder.typicode.com/posts", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(quote)
+    });
+
+    if (!response.ok) {
+      throw new Error("Failed to post quote to server");
+    }
+
+    const result = await response.json();
+    console.log("Quote posted to server:", result);
+  } catch (error) {
+    console.error("Error posting quote:", error);
   }
 }
 
