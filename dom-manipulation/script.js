@@ -124,33 +124,33 @@ function exportToJsonFile() {
   URL.revokeObjectURL(url);
 }
 
-// ===== Server Sync Simulation =====
-function fetchQuotesFromServer() {
-  fetch("https://jsonplaceholder.typicode.com/posts?_limit=5")
-    .then(response => response.json())
-    .then(data => {
-      const serverQuotes = data.map(item => ({
-        text: item.title,
-        category: "Server"
-      }));
+// ===== Server Sync Simulation (Async/Await Version) =====
+async function fetchQuotesFromServer() {
+  try {
+    const response = await fetch("https://jsonplaceholder.typicode.com/posts?_limit=5");
+    const data = await response.json();
 
-      let hasNew = false;
-      serverQuotes.forEach(sq => {
-        if (!quotes.some(q => q.text === sq.text)) {
-          quotes.push(sq);
-          hasNew = true;
-        }
-      });
+    const serverQuotes = data.map(item => ({
+      text: item.title,
+      category: "Server"
+    }));
 
-      if (hasNew) {
-        saveQuotes();
-        populateCategories();
-        alert("New quotes synced from server.");
+    let hasNew = false;
+    serverQuotes.forEach(sq => {
+      if (!quotes.some(q => q.text === sq.text)) {
+        quotes.push(sq);
+        hasNew = true;
       }
-    })
-    .catch(err => {
-      console.error("Failed to fetch from server:", err);
     });
+
+    if (hasNew) {
+      saveQuotes();
+      populateCategories();
+      alert("New quotes synced from server.");
+    }
+  } catch (err) {
+    console.error("Failed to fetch from server:", err);
+  }
 }
 
 // ===== Initialization =====
