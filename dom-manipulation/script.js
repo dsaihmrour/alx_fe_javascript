@@ -94,6 +94,30 @@ function addQuote() {
   postQuoteToServer(newQuote);
 }
 
+// ===== Dynamically Create Add Quote Form =====
+function createAddQuoteForm() {
+  const container = document.getElementById("addQuoteContainer");
+  container.innerHTML = "";
+
+  const quoteInput = document.createElement("input");
+  quoteInput.id = "newQuoteText";
+  quoteInput.type = "text";
+  quoteInput.placeholder = "Enter a new quote";
+
+  const categoryInput = document.createElement("input");
+  categoryInput.id = "newQuoteCategory";
+  categoryInput.type = "text";
+  categoryInput.placeholder = "Enter quote category";
+
+  const addButton = document.createElement("button");
+  addButton.textContent = "Add Quote";
+  addButton.addEventListener("click", addQuote);
+
+  container.appendChild(quoteInput);
+  container.appendChild(categoryInput);
+  container.appendChild(addButton);
+}
+
 // ===== JSON Import/Export =====
 function importFromJsonFile(event) {
   const fileReader = new FileReader();
@@ -178,7 +202,7 @@ async function postQuoteToServer(quote) {
   }
 }
 
-// ===== New: Manual Sync Function =====
+// ===== Manual Sync Function =====
 async function syncQuotes() {
   await fetchQuotesFromServer();
 }
@@ -187,6 +211,7 @@ async function syncQuotes() {
 window.onload = function () {
   loadQuotes();
   populateCategories();
+  createAddQuoteForm();
 
   const lastViewed = sessionStorage.getItem("lastQuote");
   if (lastViewed) {
@@ -201,7 +226,7 @@ window.onload = function () {
   categoryFilter.addEventListener("change", filterQuotes);
 
   const syncBtn = document.getElementById("syncBtn");
-  if(syncBtn) {
+  if (syncBtn) {
     syncBtn.addEventListener("click", syncQuotes);
   }
 };
